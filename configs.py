@@ -1,6 +1,6 @@
 MASTER_SEED = 42
 FIXED_LAYOUT = True
-
+SAVE_DIR = "/kaggle/working/MAPPO_checkpoints"
 CONFIG = {
     # Environment - SCALED UP
     'height': 17,
@@ -25,11 +25,12 @@ CONFIG = {
     'n_steps': 4096,  # Larger rollout buffer
     'n_epochs': 4,
     'batch_size': 128,  # Larger batches
-    'save_interval': 50,
+    'save_interval': 20,
     'log_interval': 10,
 
     # New features
     'battery_enabled': True,
     'task_system_enabled': True,
     'communication_enabled': True,
+
 }
