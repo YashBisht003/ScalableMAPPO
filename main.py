@@ -1,7 +1,8 @@
+import os
 from WarehouseEnv import WarehouseEnv
 from scalablemappo import ScalableMAPPO
 from trainer import MAPPOTrainer
-from configs import CONFIG, MASTER_SEED
+from configs import CONFIG, MASTER_SEED, SAVE_DIR
 
 import numpy as np
 import torch
@@ -9,6 +10,20 @@ import torch
 # ---------------- SEED ---------------- #
 np.random.seed(MASTER_SEED)
 torch.manual_seed(MASTER_SEED)
+
+
+# --------------------------------------------------
+# Find latest checkpoint automatically
+# --------------------------------------------------
+def find_latest_checkpoint():
+    if not os.path.exists(SAVE_DIR):
+        return None
+
+    files = [f for f in os.listdir(SAVE_DIR) if f.startswith("checkpoint_")]
+    if not files:
+        return None
+
+    return max(files, key=lambda x: int(x.split("_")[1].split(".")[0]))
 
 
 def main():
@@ -31,8 +46,8 @@ def main():
     mappo = ScalableMAPPO(
         obs_channels=obs_sample.shape[0],
         view_size=obs_sample.shape[1],
-        n_actions=8,                         # <-- CHARGE action
-        n_agents=CONFIG['n_robots'],        # <-- IMPORTANT
+        n_actions=8,                         
+        n_agents=CONFIG['n_robots'],        
         global_state_dim=len(global_state_sample),
         lr_actor=CONFIG['lr_actor'],
         lr_critic=CONFIG['lr_critic'],
@@ -52,7 +67,23 @@ def main():
         batch_size=CONFIG['batch_size'],
         save_interval=CONFIG['save_interval'],
         log_interval=CONFIG['log_interval'],
+        save_dir=SAVE_DIR
     )
+
+    # =====================================================
+    # 🔥 AUTO RESUME LATEST CHECKPOINT
+    # =====================================================
+    ckpt = find_latest_checkpoint()
+
+    if ckpt:
+        RESUME_PATH = f"{SAVE_DIR}/{ckpt}"
+        print("=" * 60)
+        print(f"Resuming training from: {RESUME_PATH}")
+        mappo.load(RESUME_PATH)
+        print("Checkpoint loaded successfully!")
+        print("=" * 60)
+    else:
+        print("No checkpoint found, training from scratch.")
 
     # -------- TRAIN -------- #
     trainer.train(total_timesteps=CONFIG['total_timesteps'])
