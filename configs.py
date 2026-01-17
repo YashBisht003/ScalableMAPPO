@@ -21,7 +21,7 @@ CONFIG = {
     'value_coef': 0.5,
 
     # Training - More samples needed
-    'total_timesteps': 2_000_000,  # Train longer
+    'total_timesteps': 10_000_000,  # Train longer
     'n_steps': 4096,  # Larger rollout buffer
     'n_epochs': 4,
     'batch_size': 128,  # Larger batches
@@ -34,3 +34,4 @@ CONFIG = {
     'communication_enabled': True,
 
 }
+
