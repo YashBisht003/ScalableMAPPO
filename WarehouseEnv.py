@@ -32,21 +32,21 @@ class WarehouseEnv(ParallelEnv):
         self.view_size = view_size
         self.render_mode = render_mode
 
-        # -------- WORLD -------- #
+        
         self.world = World(height, width, n_robots)
 
-        # Agents
+        
         self.possible_agents = [f"robot_{i}" for i in range(n_robots)]
         self.agents = self.possible_agents[:]
 
-        # -------- ACTION SPACE -------- #
-        # 0-7 : STAY, UP, DOWN, LEFT, RIGHT, PICK, DROP, CHARGE
+        
+        
         self._action_spaces = {
             agent: spaces.Discrete(8) for agent in self.possible_agents
         }
 
-        # -------- OBS SPACE -------- #
-        # 7 channels (as per new world)
+       
+        
         self._observation_spaces = {
             agent: spaces.Box(
                 low=0,
@@ -59,7 +59,7 @@ class WarehouseEnv(ParallelEnv):
 
         self.current_step = 0
 
-        # -------- RENDERER -------- #
+        
         self.renderer = None
         if render_mode in ["human", "rgb_array"]:
             try:
@@ -75,7 +75,7 @@ class WarehouseEnv(ParallelEnv):
                 print("⚠ pygame not available, ASCII fallback")
                 print(e)
 
-    # -------------------------------------------------
+    
 
     @property
     def observation_space(self):
@@ -108,7 +108,7 @@ class WarehouseEnv(ParallelEnv):
 
         return observations, infos
 
-    # -------------------------------------------------
+    
 
     def step(self, actions: Dict[str, int]):
 
@@ -128,7 +128,7 @@ class WarehouseEnv(ParallelEnv):
 
         return observations, rewards, terminations, truncations, infos
 
-    # -------------------------------------------------
+    
 
     def render(self):
 
@@ -149,7 +149,7 @@ class WarehouseEnv(ParallelEnv):
 
         return None
 
-    # -------------------------------------------------
+    
 
     def close(self):
 
@@ -157,7 +157,8 @@ class WarehouseEnv(ParallelEnv):
             self.renderer.close()
             self.renderer = None
 
-    # -------------------------------------------------
+    
 
     def get_global_state(self):
         return self.world.get_global_state()
+
