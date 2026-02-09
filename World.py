@@ -1,18 +1,13 @@
 import numpy as np
 from typing import Dict, Tuple, List, Optional
 
-# ===============================
-# Cell types
-# ===============================
+
 EMPTY = 0
 WALL = 1
 SHELF = 2
 DROP = 3
 CHARGING = 4  # NEW: Charging stations
 
-# ===============================
-# Actions
-# ===============================
 STAY = 0
 UP = 1
 DOWN = 2
@@ -22,9 +17,7 @@ PICK = 5
 DROP_ACT = 6
 CHARGE = 7  # NEW: Charge action
 
-# ===============================
-# Priority Levels for Tasks
-# ===============================
+
 PRIORITY_LOW = 1
 PRIORITY_NORMAL = 2
 PRIORITY_HIGH = 3
@@ -79,9 +72,7 @@ class World:
 
         self._build_fixed_world()
 
-    # =================================================
-    # ENHANCED 17x17 WAREHOUSE LAYOUT
-    # =================================================
+   
 
     def _build_fixed_world(self):
         """
@@ -275,9 +266,7 @@ class World:
         # Sort by priority (higher priority first)
         self.task_queue.sort(key=lambda t: -t['priority'])
 
-    # =================================================
-    # ENHANCED STEP FUNCTION
-    # =================================================
+   
 
     def step(self, actions: Dict[str, int]):
         """
@@ -456,9 +445,6 @@ class World:
 
         return bonus
 
-    # =================================================
-    # ENHANCED OBSERVATION
-    # =================================================
 
     def get_local_observation(self, rid: str, view_size=5):
         """
@@ -494,19 +480,19 @@ class World:
                 if cell == CHARGING:
                     obs[6, i, j] = 1
 
-                # Other robots
+                
                 for oid, (ox, oy) in self.robots.items():
                     if oid != rid and (ox, oy) == (wx, wy):
                         obs[2, i, j] = 1
 
-        # Self position
+        
         obs[3, half, half] = 1
 
-        # Carrying status
+        
         if self.carrying[rid]:
             obs[4, :, :] = 1
 
-        # Battery level (normalized)
+        
         obs[5, :, :] = self.battery[rid] / 100.0
 
         return obs
@@ -559,9 +545,7 @@ class World:
         # Total: 40 + 48 + 8 + 6 + 15 = 117 features
         return np.array(state, dtype=np.float32)
 
-    # =================================================
-    # HELPER METHODS
-    # =================================================
+    
 
     def _adjacent_shelf(self, pos):
         x, y = pos
@@ -607,5 +591,6 @@ class World:
 
         for i, (rid, (x, y)) in enumerate(self.robots.items()):
             disp[x, y] = str(i)
+
 
         return "\n".join("".join(str(c) for c in r) for r in disp)
